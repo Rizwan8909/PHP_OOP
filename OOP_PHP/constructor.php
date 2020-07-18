@@ -8,6 +8,12 @@
             $this->name = $Emp_name;
             $this->salary = $Emp_salary;
         }
+
+        function __destruct()
+        {
+            // This will destruc the object once it is created
+            echo "I am destructing ".$this->name." <br>";
+        }
     }
 
     $Rizwan = new Employee("Rizwan", 100000);
