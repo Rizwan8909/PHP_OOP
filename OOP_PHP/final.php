@@ -9,7 +9,7 @@
         }
     }
 
-    // Final Class ka child nhe bn sakta
+    // Final Class ka child nhe bn sakta.
     final class Son extends Father {
 
         function display(){
