@@ -1,0 +1,162 @@
+<?php
+include "db_connect.php";
+
+$alert = false;
+$alertContent = false;
+$alertColor = false;
+
+
+
+if (isset($_POST['delete'])) {
+    $delete_id = $_POST['delete_id'];
+
+    $sql = "DELETE FROM `student` WHERE `ID` = '$delete_id'";
+    $result = $conn->query($sql);
+
+    if ($result) {
+        $alert = true;
+        $alertContent = "Success! Deleted Successfully";
+        $alertColor = "success";
+    } else {
+        $alert = true;
+        $alertContent = "Error! Can't delete the record";
+        $alertColor = "danger";
+    }
+}
+
+if (isset($_POST['submit'])) {
+
+    $name = $_POST['name'];
+    $roll = $_POST['roll'];
+    $marks = $_POST['marks'];
+
+    if ($name == '' || $roll == '' || $marks == '') {
+        $alert = true;
+        $alertContent = "Error! Please Fill all the fields";
+        $alertColor = "danger";
+    } else {
+
+        $sql = "INSERT INTO `Student` (`name`, `roll`, `marks`) VALUES ('$name', '$roll', '$marks')";
+        $result = $conn->query($sql);
+
+        if ($result) {
+            $alert = true;
+            $alertContent = "Success! Inserted Successfully";
+            $alertColor = "success";
+        } else {
+            echo $con->mysli_error();
+        }
+    }
+}
+
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <h1>STUDENT CENTER</h1>
+        <?php
+                if ($alert) {
+                    echo '<div class="alert alert-' . $alertColor . ' alert-dismissible fade show" role="alert">
+                                ' . $alertContent . '
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>';
+                }
+                ?>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+                <h4>Insert Data</h4>
+
+                <form action="studentCenter.php" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="roll">Roll No</label>
+                        <input type="number" class="form-control" id="roll" name="roll">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="marks">Marks</label>
+                        <input type="number" class="form-control" id="marks" name="marks">
+                    </div>
+
+                    <button type="submit" name='submit' class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+            <div class="col-md-8">
+                <h4>Displaying Records</h4>
+                
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Roll No</th>
+                            <th scope="col">Marks</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        <?php
+
+                        $sql = "SELECT * FROM `Student`";
+                        $result = $conn->query($sql);
+
+                        while ($row = $result->fetch_assoc()) {
+                            $id = $row['ID'];
+                            $name = $row['name'];
+                            $roll = $row['roll'];
+                            $marks = $row['marks'];
+
+                            echo '<tr>
+                                <td>' . $id . '</td>
+                                <td>' . $name . '</td>
+                                <td>' . $roll . '</td>
+                                <td>' . $marks . '</td>
+                                <td>
+                                    <form action="studentCenter.php" method="POST"> <!--secure deleting-->
+                                        <input type="hidden" name="delete_id" value="' . $id . '">
+                                        <button type="submit" name="delete" value="delete" class="btn btn-danger">Delete</button>
+                                    </form> 
+                                    
+                                </td>
+                            </tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+
+</html>
